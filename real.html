@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Spline Scene</title>
+    <script src="https://unpkg.com/@splinetool/viewer@1.9.46/build/spline-viewer.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .loader {
+            width: 32px;
+            height: 32px;
+            border: 4px solid #FFF;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            animation: rotation 1s linear infinite;
+        }
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .spotlight {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.3), transparent 70%);
+            filter: blur(20px);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .card-container:hover .spotlight {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 p-8">
+    <div class="card-container max-w-6xl mx-auto rounded-xl border border-gray-700 bg-gray-900/[0.96] shadow-lg overflow-hidden relative" 
+         style="height: 500px;">
+        <!-- Spotlight -->
+        <div class="spotlight" id="spotlight"></div>
+        
+        <div class="flex h-full">
+            <!-- Left content -->
+            <div class="flex-1 p-8 relative z-10 flex flex-col justify-center">
+                <h1 class="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-400">
+                    Interactive 3D
+                </h1>
+                <p class="mt-4 text-gray-300 max-w-lg">
+                    Bring your UI to life with beautiful 3D scenes. Create immersive experiences 
+                    that capture attention and enhance your design.
+                </p>
+            </div>
+
+            <!-- Right content - 3D Scene -->
+            <div class="flex-1 relative">
+                <div id="spline-container" class="w-full h-full">
+                    <div class="w-full h-full flex items-center justify-center">
+                        <div class="loader"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load Spline scene
+        const splineContainer = document.getElementById('spline-container');
+        const splineViewer = document.createElement('spline-viewer');
+        splineViewer.setAttribute('url', 'https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode');
+        splineViewer.style.width = '100%';
+        splineViewer.style.height = '100%';
+        
+        setTimeout(() => {
+            splineContainer.innerHTML = '';
+            splineContainer.appendChild(splineViewer);
+        }, 1000);
+
+        // Mouse spotlight effect
+        const spotlight = document.getElementById('spotlight');
+        const cardContainer = document.querySelector('.card-container');
+        
+        cardContainer.addEventListener('mousemove', (e) => {
+            const rect = cardContainer.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            spotlight.style.left = `${x - 100}px`;
+            spotlight.style.top = `${y - 100}px`;
+        });
+        
+        cardContainer.addEventListener('mouseenter', () => {
+            spotlight.style.opacity = '1';
+        });
+        
+        cardContainer.addEventListener('mouseleave', () => {
+            spotlight.style.opacity = '0';
+        });
+    </script>
+</body>
+</html>
